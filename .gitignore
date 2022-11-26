@@ -1,5 +1,4 @@
-#start.sh - each controller needs to have its own script derived from start_prod.sh
-start.sh
+
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
