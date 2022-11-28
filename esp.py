@@ -44,7 +44,8 @@ class Esp:
             output = output.decode('utf8').replace("'", '"')
             output = output.replace("\n","<br>")
             print(output)
+            
+            self.status =  "ok"
             return output
         except Exception as e:
-            print(e)
-        #print("Command exit status/return code : ", p_status)
+            self.status =  "{}".format(e)

@@ -1,6 +1,15 @@
 var version = "0.0"
 
-function start_testing(){
+function test(isFlash){
+    if(isFlash){
+        $("#output").append("<br>")
+    }else{
+        $("#output").text("")
+    }
+    $("#output").append("-> Testing ")
+    $("#test").text("Testing .. ")
+    $("#test").append('<span class="spinner-border spinner-border-sm"></span>')
+    timer = setInterval(function () {$("#output").append(".")}, 1e3);
     $.ajax({
         type: "POST",
         url: "/test",
@@ -10,24 +19,63 @@ function start_testing(){
             clearTimeout(timer)
             if (e.Status === "ok"){
                 $("#output").append("<br>")
-                $("#output").append("4. The test process was succesfully -> <br><code>"+e.Detailes+"</code>")
+                $("#output").append("-> The test process was succesfully: <br><code>"+e.Detailes+"</code>")
                 $("#test").text("Start")
 
             }else{
+                $("#output").append("<br>")
+                $("#output").append("-> The test process was failed: <br><code>"+e.Detailes+"</code>")
                 $("#test").text("Start")
-                $("#output").append("3. <code>"+e.Status+"</code>")
             }
         },
         error: function () {
-            
+            clearTimeout(timer)
+            $("#test").text("Start")
+            $("#output").append("<br>")
+            $("#output").append("-> <span id='success'>"+error+"</span>") 
         },
+    });
+}
+
+function erase_flash(isTest){
+    $("#test").text("Flashing .. "),
+    $("#output").text(""),
+    $("#output").append("-> Erasing and flashing firmware with version: <span id='success'>"+version+"</span> "), 
+    $("#test").append('<span class="spinner-border spinner-border-sm"></span>'),
+    (timer = setInterval(function () {$("#output").append(".")}, 1e3));
+
+    $.ajax({
+        type: "POST",
+        url: "/test",
+        async: !0,
+        data: JSON.stringify({ cmd: "start_flashing"}),
+        success: function (e) {
+            clearTimeout(timer)
+            if (e.Status === "ok"){
+                $("#output").append("<br>")
+                $("#output").append("-> <strong> The erasing and flashing process was successful! </strong>")
+                if(isTest){
+                    test()
+                }
+            }else{
+                $("#test").text("Start")
+                $("#output").append("<br>")
+                $("#output").append("-> <span id='fail'>"+e.Status+"</span>")
+            }
+        },
+        error: function (xhr, status, error) {
+            clearTimeout(timer)
+            $("#test").text("Start")
+            $("#output").append("<br>")
+            $("#output").append("-> <span id='success'>"+error+"</span>")
+        },
+        
     });
 }
 
 $(function () {
     $("div.mainContainer").load("overview", function () {
         $(".loader").hide(100);
-        $('<button type="button" id="test" class="btn btn-primary btn-lg">Start</button>').appendTo("#testContainer");
         $.ajax({
             type: "POST",
             url: "/test",
@@ -40,46 +88,19 @@ $(function () {
         }
     )
 });
+
 $(document).on("click", "#test", function () {
+    var isFlash = $("#flashCheckbox").is(":checked")
+    var isTest = $("#testCheckbox").is(":checked")
+
+
     if($("#test").text() === "Start"){
-        $("#test").text("Flashing .. "),
-        $("#output").text(""),
-        $("#output").append("1. Erasing and flashing firmware with version: <code>"+version+"</code> "), 
-        $("#test").append('<span class="spinner-border spinner-border-sm"></span>'),
-        (timer = setInterval(function () {
-            $("#output").append(".")
-        }, 1e3));
-
-        $.ajax({
-            type: "POST",
-            url: "/test",
-            async: !0,
-            data: JSON.stringify({ cmd: "start_flashing"}),
-            success: function (e) {
-                clearTimeout(timer)
-                if (e.Status === "ok"){
-                    $("#output").append("<br>")
-                    $("#output").append("2. <strong> The erasing and flashing process was successful! </strong>")
-                    $("#output").append("<br>")
-                    $("#output").append("3. Testing ")
-                    timer = setInterval(function () {$("#output").append(".")}, 1e3);
-                    $("#test").text("Testing .. ")
-                    $("#test").append('<span class="spinner-border spinner-border-sm"></span>')
-                    start_testing()
-
-                }else{
-                    $("#test").text("Start")
-                    $("#output").append("<br>")
-                    $("#output").append("2. <code>"+e.Status+"</code>")
-                }
-                console.log(e.Status)
-    
-            },
-            error: function () {
-                
-            },
-            
-        });
-
+        if(isFlash == true){
+            erase_flash(isTest)
+        }else if(isFlash == false && isTest == true){
+            test()
+        }else if(isFlash == false && isTest == false){
+            alert("Zvolte některou z možných procedúr!")
+        }
     }
 })
