@@ -56,7 +56,6 @@ class Esp:
             self.gpioHandler(state=2)
             p = subprocess.Popen("ampy --port /dev/ttyAMA0 get test_report.txt", stdout=subprocess.PIPE, shell=True)
             (output, err) = p.communicate()
-            print(".................",err)
             p_status = p.wait()
             output = output.decode('utf8').replace("'", '"')
             output = output.replace(" ", "")
@@ -122,4 +121,4 @@ class Esp:
             GPIO.output(boot, False)
             GPIO.setup(esp, GPIO.OUT)
             GPIO.output(esp, True)
-            time.sleep(3)
+            time.sleep(5)
