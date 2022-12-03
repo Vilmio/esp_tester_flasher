@@ -4,13 +4,14 @@ import os
 import subprocess
 import json
 import RPi.GPIO as GPIO
+import re
 
 class Esp:
 
     def __init__(self) -> None:
         OFF : int = 0
         self.stopped = False
-        self.baudrate = 921600
+        self.baudrate = 1843200
         self.status = "Inactive"
         self.firmwareVersion = self.get_fimrwareVersion()
         GPIO.setmode(GPIO.BCM)
@@ -29,31 +30,75 @@ class Esp:
             
     def start_flash(self):
         print("Start flashing ...")
+        self.gpioHandler(state=0)
         self.gpioHandler(state=1)
         
         try:
             self.status = "Upload new firmware, please wait!"
-            esptool.main(["--chip", "auto", "-b", "{}".format(self.baudrate), "write_flash", "-e","-z","0x1000","firmware_2.10.bin"])
+            esptool.main(["--chip", "auto", "-b", "{}".format(self.baudrate), "write_flash", "-e","-z","0x1000","firmware_{}.bin".format(self.firmwareVersion)])
             print("Flash success!")
             self.status =  "ok"
         except Exception as e:
             self.status = "{}".format(e)
+        
         self.gpioHandler(state=0)
+
+    def Convert(self, lst):
+        it = iter(lst)
+        res_dct = dict(zip(it, it))
+        return res_dct
+
 
     def start_testing(self):
         try:
             print("start testing")
+            self.gpioHandler(state=0)
             self.gpioHandler(state=2)
-            p = subprocess.Popen("ampy --port /dev/cu.usbserial-0001 get test_report.txt", stdout=subprocess.PIPE, shell=True)
+            p = subprocess.Popen("ampy --port /dev/ttyAMA0 get test_report.txt", stdout=subprocess.PIPE, shell=True)
             (output, err) = p.communicate()
+            print(".................",err)
             p_status = p.wait()
             output = output.decode('utf8').replace("'", '"')
-            output = output.replace("\n","<br>")
-            print(output)
+            output = output.replace(" ", "")
+            res = re.split("[:\n]",output)
+            output = self.Convert(res)
+            if "EVSE" in output:
+                if "OK" in output["EVSE"]:
+                    output["EVSE"] = "<span id='success'> OK </span>"
+                else:
+                    output["EVSE"] = "<span id='fail'> NOK </span>"
+            if "WATTMETER" in output:
+                if "OK" in output["WATTMETER"]:
+                    output["WATTMETER"] = "<span id='success'> OK </span>"
+                else:
+                    output["WATTMETER"] = "<span id='fail'> NOK </span>"
+            if "RELAY" in output:
+                if "OK" in output["RELAY"]:
+                    output["RELAY"] = "<span id='success'> OK </span>"
+                else:
+                    output["RELAY"] = "<span id='fail'> NOK </span>"
+            if "DE" in output:
+                if "OK" in output["DE"]:
+                    output["DE"] = "<span id='success'> OK </span>"
+                else:
+                    output["DE"] = "<span id='fail'> NOK </span>"
+            if "Firmwareversion" in output:
+                if self.firmwareVersion in output["Firmwareversion"]:
+                    output["Firmwareversion"] = "<span id='success'> {} </span>".format(self.firmwareVersion)
+                else:
+                    output["Firmwareversion"] = "<span id='fail'> NOK </span>"
+            else:
+                self.status =  "fail"
+                self.gpioHandler(state=0)
+                return "ESP firmware failed to load. No such file: test_report.txt"
+
+            self.status =  "ok"
+            self.gpioHandler(state=0)
             return output
         except Exception as e:
-            print(e)
-        self.gpioHandler(state=0)
+            self.status =  "fail"
+            self.gpioHandler(state=0)
+            return e
         #print("Command exit status/return code : ", p_status)
 
     def gpioHandler(self, state = 0):
@@ -64,18 +109,17 @@ class Esp:
             GPIO.output(boot, False)
             GPIO.setup(esp, GPIO.OUT)
             GPIO.output(esp, False)
-            time.sleep(0.2)
+            time.sleep(1)
         elif state == 1:
             GPIO.setup(boot, GPIO.OUT)
             GPIO.output(boot, True)
-            time.sleep(0.2)
+            time.sleep(1)
             GPIO.setup(esp, GPIO.OUT)
             GPIO.output(esp, True)
-            time.sleep(0.2)
+            time.sleep(1)
         elif state == 2:
             GPIO.setup(boot, GPIO.OUT)
             GPIO.output(boot, False)
-            time.sleep(0.2)
             GPIO.setup(esp, GPIO.OUT)
             GPIO.output(esp, True)
-            time.sleep(0.2)
+            time.sleep(3)

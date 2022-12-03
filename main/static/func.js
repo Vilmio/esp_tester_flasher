@@ -17,14 +17,20 @@ function test(isFlash){
         data: JSON.stringify({ cmd: "start_test"}),
         success: function (e) {
             clearTimeout(timer)
-            if (e.Status === "ok"){
+            if (e.Status == "ok"){
                 $("#output").append("<br>")
-                $("#output").append("-> The test process was succesfully: <br><code>"+e.Detailes+"</code>")
+                $("#output").append("-> The test process was succesfully:"+
+                    "<br>Binary version: <strong>"+(e.Report.Binaryversion)+"</strong>"+
+                    "<br>Firmware version: "+(e.Report.Firmwareversion)+
+                    "<br>EVSE: "+(e.Report.EVSE)+
+                    "<br>WATTMETER: "+(e.Report.WATTMETER)+
+                    "<br>RELAY: "+(e.Report.RELAY)+
+                    "<br>DE: "+(e.Report.DE))
                 $("#test").text("Start")
 
             }else{
                 $("#output").append("<br>")
-                $("#output").append("-> The test process was failed: <br><code>"+e.Detailes+"</code>")
+                $("#output").append("-> The test process was failed: <br><code>"+e.Report+"</code>")
                 $("#test").text("Start")
             }
         },
@@ -55,7 +61,9 @@ function erase_flash(isTest){
                 $("#output").append("<br>")
                 $("#output").append("-> <strong> The erasing and flashing process was successful! </strong>")
                 if(isTest){
-                    test()
+                    test(true)
+                }else{
+                    $("#test").text("Start")
                 }
             }else{
                 $("#test").text("Start")

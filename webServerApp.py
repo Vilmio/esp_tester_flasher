@@ -47,9 +47,8 @@ def test():
         elif data["cmd"] == "get_firmware_version":
             datalayer = {'Status':esp.firmwareVersion}
         elif data["cmd"] == "start_test":
-            sleep(20)
             test_report = esp.start_testing()
-            datalayer = {'Status':"ok","Detailes":test_report}
+            datalayer = {'Status':esp.status,"Report":test_report}
 
     response = app.response_class(
         response =json.dumps(datalayer),
