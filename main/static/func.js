@@ -112,3 +112,6 @@ $(document).on("click", "#test", function () {
         }
     }
 })
+$(document).on("click", "#refresh", function () {
+    location.reload();
+})

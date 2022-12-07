@@ -3,7 +3,10 @@ import time
 import os
 import subprocess
 import json
-import RPi.GPIO as GPIO
+try:
+    import RPi.GPIO as GPIO
+except:
+    pass
 import re
 
 class Esp:
@@ -14,9 +17,12 @@ class Esp:
         self.baudrate = 1843200
         self.status = "Inactive"
         self.firmwareVersion = self.get_fimrwareVersion()
-        GPIO.setmode(GPIO.BCM)
-        GPIO.setwarnings(False)
-        self.gpioHandler(state=OFF)
+        try:
+            GPIO.setmode(GPIO.BCM)
+            GPIO.setwarnings(False)
+            self.gpioHandler(state=OFF)
+        except:
+            pass
 
 
     def get_fimrwareVersion(self):
@@ -103,22 +109,25 @@ class Esp:
     def gpioHandler(self, state = 0):
         esp = 23
         boot = 22
-        if state == 0:
-            GPIO.setup(boot, GPIO.OUT)
-            GPIO.output(boot, False)
-            GPIO.setup(esp, GPIO.OUT)
-            GPIO.output(esp, False)
-            time.sleep(1)
-        elif state == 1:
-            GPIO.setup(boot, GPIO.OUT)
-            GPIO.output(boot, True)
-            time.sleep(1)
-            GPIO.setup(esp, GPIO.OUT)
-            GPIO.output(esp, True)
-            time.sleep(1)
-        elif state == 2:
-            GPIO.setup(boot, GPIO.OUT)
-            GPIO.output(boot, False)
-            GPIO.setup(esp, GPIO.OUT)
-            GPIO.output(esp, True)
-            time.sleep(5)
+        try:
+            if state == 0:
+                GPIO.setup(boot, GPIO.OUT)
+                GPIO.output(boot, False)
+                GPIO.setup(esp, GPIO.OUT)
+                GPIO.output(esp, False)
+                time.sleep(1)
+            elif state == 1:
+                GPIO.setup(boot, GPIO.OUT)
+                GPIO.output(boot, True)
+                time.sleep(1)
+                GPIO.setup(esp, GPIO.OUT)
+                GPIO.output(esp, True)
+                time.sleep(1)
+            elif state == 2:
+                GPIO.setup(boot, GPIO.OUT)
+                GPIO.output(boot, False)
+                GPIO.setup(esp, GPIO.OUT)
+                GPIO.output(esp, True)
+                time.sleep(5)
+        except:
+            pass
