@@ -3,7 +3,7 @@
 Description=Pulling recent git repo
 After=network.target
 
-[Unit]
+[Service]
 Type=simple
 User=test
 WorkingDirectory=/home/test/esp_tester_flasher/
