@@ -1,12 +1,11 @@
 [Unit]
 Description=ESP32 - tester
-After=network.target
+After=gitPull.service
 
 [Service]
 Type=simple
 User=test
 WorkingDirectory=/home/test/esp_tester_flasher/
-ExecStartPre=/bin/sleep 10
 ExecStart=/home/test/esp_tester_flasher/start.sh
 Restart=always
 
