@@ -4,10 +4,11 @@ Description=Pulling recent git repo
 After=network.target
 
 [Unit]
-Type=oneshot
+Type=simple
+User=test
 WorkingDirectory=/home/test/esp_tester_flasher/
-ExecStart=/usr/bin/git reset --hard main
-ExecStart=/usr/bin/git pull
+#ExecStart=/usr/bin/git reset --hard main
+ExecStart=git pull
 
 [Install]
-WantedBy=default.target
+WantedBy=multi-user.target
