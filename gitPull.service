@@ -1,0 +1,13 @@
+# $HOME/.config/systemd/user/gitpull.service
+[Unit]
+Description=Pulling recent git repo
+After=network.target
+
+[Unit]
+Type=oneshot
+WorkingDirectory=/home/test/esp_tester_flasher/
+ExecStart=/usr/bin/git reset --hard main
+ExecStart=/usr/bin/git pull
+
+[Install]
+WantedBy=default.target
