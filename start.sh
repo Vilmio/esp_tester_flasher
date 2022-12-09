@@ -1,5 +1,5 @@
 #!/bin/bash
 
-python3 webServerApp.py
+sudo -u test python3 webServerApp.py
 
 exit $?
