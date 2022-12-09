@@ -1,8 +1,8 @@
 #!/bin/bash
 
-sudo -E -u test git checkout .
-sudo -E -u test git pull
+sudo -u test git checkout .
+sudo -u test git pull
 
-sudo -E -u test python3 webServerApp.py
+sudo -u test python3 webServerApp.py
 
 exit $?
