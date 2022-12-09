@@ -4,7 +4,7 @@ After=network.target
 
 [Service]
 Type=simple
-User=root
+User=test
 WorkingDirectory=/home/test/esp_tester_flasher/
 ExecStart=/home/test/esp_tester_flasher/start.sh
 Restart=always
