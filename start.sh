@@ -1,7 +1,7 @@
 #!/bin/bash
 
-sudo -u test git checkout .
-sudo -u test git pull
+sudo -E -u test git checkout .
+sudo -E -u test git pull
 
 python3 webServerApp.py
 
