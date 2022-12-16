@@ -59,8 +59,13 @@ def test():
     return response
 
 if __name__ =='__main__':
-    git_repo = Git()
-    git_repo.pull()
+    try:
+        print("Try to udpate git repository")
+        git_repo = Git()
+        git_repo.pull()
+        print("Update was succesfull!")
+    except Exception as e:
+        print("Error during git pull reqiest: ",e)
     app.run(host="0.0.0.0",port=8000,debug=True)
     #loop = asyncio.get_event_loop
 
