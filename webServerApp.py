@@ -61,6 +61,7 @@ def test():
 if __name__ =='__main__':
     try:
         print("Try to udpate git repository")
+        sleep(4)
         git_repo = Git()
         git_repo.pull()
         print("Update was succesfull!")
