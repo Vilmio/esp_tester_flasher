@@ -47,13 +47,15 @@ def test():
             datalayer = {'Status':esp.status}
         elif data["cmd"] == "get_firmware_version":
             datalayer = {'Status':esp.firmwareVersion,'Tester':getVersion()}
+            try:
+                print("Try to udpate git repository")
+                git_repo = Git()
+                git_repo.pull()
+                print("Update was succesfull!")
+            except Exception as e:
+                pass
         elif data["cmd"] == "start_test":
             test_report = esp.start_testing()
-            
-            print("Try to udpate git repository")
-            git_repo = Git()
-            git_repo.pull()
-            print("Update was succesfull!")
             datalayer = {'Status':esp.status,"Report":test_report}
 
     response = app.response_class(
@@ -73,13 +75,6 @@ def getVersion():
     return "0.0.0"
 
 if __name__ =='__main__':
-    try:
-        print("Try to udpate git repository")
-        git_repo = Git()
-        git_repo.pull()
-        print("Update was succesfull!")
-    except Exception as e:
-        print("Error during git pull reqiest: ",e)
     app.run(host="0.0.0.0",port=8000,debug=True)
     #loop = asyncio.get_event_loop
 
