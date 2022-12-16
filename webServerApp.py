@@ -49,6 +49,11 @@ def test():
             datalayer = {'Status':esp.firmwareVersion,'Tester':getVersion()}
         elif data["cmd"] == "start_test":
             test_report = esp.start_testing()
+            
+            print("Try to udpate git repository")
+            git_repo = Git()
+            git_repo.pull()
+            print("Update was succesfull!")
             datalayer = {'Status':esp.status,"Report":test_report}
 
     response = app.response_class(
@@ -70,7 +75,6 @@ def getVersion():
 if __name__ =='__main__':
     try:
         print("Try to udpate git repository")
-        sleep(4)
         git_repo = Git()
         git_repo.pull()
         print("Update was succesfull!")
