@@ -1,6 +1,6 @@
 [Unit]
 Description=ESP32 - tester
-After=gitPull.service
+After=network.target
 
 [Service]
 Type=simple
