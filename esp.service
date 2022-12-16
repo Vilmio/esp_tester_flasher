@@ -6,7 +6,7 @@ After=network.target
 Type=simple
 User=test
 WorkingDirectory=/home/test/
-ExecStart=esp_tester_flasher/start.sh
+ExecStart=/home/test/esp_tester_flasher/start.sh
 Restart=always
 
 [Install]
