@@ -46,14 +46,14 @@ def test():
             esp.start_flash()
             datalayer = {'Status':esp.status}
         elif data["cmd"] == "get_firmware_version":
-            datalayer = {'Status':esp.firmwareVersion,'Tester':getVersion()}
             try:
                 print("Try to udpate git repository")
                 git_repo = Git()
                 git_repo.pull()
                 print("Update was succesfull!")
             except Exception as e:
-                pass
+                print("Git error: ",e)
+            datalayer = {'Status':esp.firmwareVersion,'Tester':getVersion()}
         elif data["cmd"] == "start_test":
             test_report = esp.start_testing()
             datalayer = {'Status':esp.status,"Report":test_report}
