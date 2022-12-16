@@ -6,10 +6,8 @@ After=network.target
 [Service]
 Type=simple
 User=test
-WorkingDirectory=/home/test/esp_tester_flasher/
-ExecStart=git checkout .
-ExecStart=git reset --hard main
-ExecStart=git pull
+WorkingDirectory=/home/test/
+ExecStart=git clone https://github.com/Vilmio/esp_tester_flasher.git
 
 [Install]
 WantedBy=multi-user.target
