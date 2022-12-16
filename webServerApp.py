@@ -59,7 +59,7 @@ def test():
     return response
 
 if __name__ =='__main__':
-    git_repo = gitCLI()
+    git_repo = gitCLI.Git()
     git_repo.pull()
     app.run(host="0.0.0.0",port=8000,debug=True)
     #loop = asyncio.get_event_loop
