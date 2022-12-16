@@ -91,6 +91,8 @@ $(function () {
             data: JSON.stringify({ cmd: "get_firmware_version"}),
             success: function (e) {
                 version = e.Status
+                testerVersion = e.Tester
+                $("#testerVersion").text(testerVersion)
             },
         });
         }

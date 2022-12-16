@@ -46,7 +46,7 @@ def test():
             esp.start_flash()
             datalayer = {'Status':esp.status}
         elif data["cmd"] == "get_firmware_version":
-            datalayer = {'Status':esp.firmwareVersion}
+            datalayer = {'Status':esp.firmwareVersion,'Tester':getVersion()}
         elif data["cmd"] == "start_test":
             test_report = esp.start_testing()
             datalayer = {'Status':esp.status,"Report":test_report}
@@ -57,6 +57,15 @@ def test():
         mimetype='application/json'
     )
     return response
+
+def getVersion():
+    arr = os.listdir()
+    for i in arr:
+        if i[:3] == "rev":
+            version = i[3:]
+            version = version.split("_")
+            return version[1]
+    return "0.0.0"
 
 if __name__ =='__main__':
     try:
