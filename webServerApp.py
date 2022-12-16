@@ -6,7 +6,7 @@ from flask.wrappers import Request
 import esp
 import os
 from sys import getsizeof
-import gitCLI
+from gitCLI import Git
 
 STATIC_PATH = 'main'
 STATIC_URL_PATH = '/main'
@@ -59,7 +59,7 @@ def test():
     return response
 
 if __name__ =='__main__':
-    git_repo = gitCLI.Git()
+    git_repo = Git()
     git_repo.pull()
     app.run(host="0.0.0.0",port=8000,debug=True)
     #loop = asyncio.get_event_loop

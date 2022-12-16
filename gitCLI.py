@@ -5,5 +5,5 @@ class Git:
         pass
 
     def pull(self):
-        g = gitCLI.cmd.Git()
+        g = git.cmd.Git()
         g.pull()
