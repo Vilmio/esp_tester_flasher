@@ -63,8 +63,7 @@ class Esp:
             print("start testing")
             self.gpioHandler(state=0)
             self.gpioHandler(state=2)
-            self.run("ampy --port /dev/ttyAMA0 get test_report.txt",self.AMPY_TIMEOUT)
-            
+            output, err = self.run("ampy --port /dev/ttyAMA0 get test_report.txt",self.AMPY_TIMEOUT)
             output = output.decode('utf8').replace("'", '"')
             output = output.replace(" ", "")
             res = re.split("[:\n]",output)
@@ -108,7 +107,8 @@ class Esp:
             return e
         #print("Command exit status/return code : ", p_status)
 
-    def run(cmd, timeout_sec):
+    def run(self,cmd, timeout_sec):
+        print("AMPY start")
         proc = Popen(shlex.split(cmd), stdout=PIPE, stderr=PIPE)
         timer = Timer(timeout_sec, proc.kill)
         stderr = None
@@ -118,6 +118,8 @@ class Esp:
             stdout, stderr = proc.communicate()
         finally:
             timer.cancel()
+        
+        print("AMPY stop")
         return stdout,stderr
         
     def gpioHandler(self, state = 0):
