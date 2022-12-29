@@ -1,8 +1,10 @@
 import esptool
 import time
 import os
-import subprocess
+from subprocess import Popen, PIPE
+import shlex
 import json
+from threading import Timer
 try:
     import RPi.GPIO as GPIO
 except:
@@ -13,6 +15,7 @@ class Esp:
 
     def __init__(self) -> None:
         OFF : int = 0
+        self.AMPY_TIMEOUT = 20
         self.stopped = False
         self.baudrate = 1843200
         self.status = "Inactive"
@@ -60,9 +63,8 @@ class Esp:
             print("start testing")
             self.gpioHandler(state=0)
             self.gpioHandler(state=2)
-            p = subprocess.Popen("ampy --port /dev/ttyAMA0 get test_report.txt", stdout=subprocess.PIPE, shell=True)
-            (output, err) = p.communicate()
-            p_status = p.wait()
+            self.run("ampy --port /dev/ttyAMA0 get test_report.txt",self.AMPY_TIMEOUT)
+            
             output = output.decode('utf8').replace("'", '"')
             output = output.replace(" ", "")
             res = re.split("[:\n]",output)
@@ -106,6 +108,18 @@ class Esp:
             return e
         #print("Command exit status/return code : ", p_status)
 
+    def run(cmd, timeout_sec):
+        proc = Popen(shlex.split(cmd), stdout=PIPE, stderr=PIPE)
+        timer = Timer(timeout_sec, proc.kill)
+        stderr = None
+        stdout = None
+        try:
+            timer.start()
+            stdout, stderr = proc.communicate()
+        finally:
+            timer.cancel()
+        return stdout,stderr
+        
     def gpioHandler(self, state = 0):
         esp = 23
         boot = 22
