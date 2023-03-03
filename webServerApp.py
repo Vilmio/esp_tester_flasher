@@ -14,7 +14,7 @@ TEMPLATE_PATH = 'main/template/'
 
 app = Flask(__name__,template_folder=TEMPLATE_PATH,static_url_path=STATIC_URL_PATH,static_folder=STATIC_PATH)
 
-esp = esp.Esp()
+esp_controller = esp.Esp()
 
 @app.route('/')
 def main():
@@ -30,7 +30,7 @@ def settings():
 
 @app.route('/updateData')
 def updateData():
-    datalayer = {'Status':esp.status}
+    datalayer = {'Status':esp_controller.status}
     response = app.response_class(
         response =json.dumps(datalayer),
         status=200,
@@ -43,8 +43,8 @@ def test():
     for i in request.form:
         data = json.loads(i)
         if data["cmd"] == "start_flashing":
-            esp.start_flash()
-            datalayer = {'Status':esp.status}
+            esp_controller.start_flash()
+            datalayer = {'Status':esp_controller.status}
         elif data["cmd"] == "get_firmware_version":
             try:
                 print("Try to udpate git repository")
@@ -53,10 +53,10 @@ def test():
                 print("Update was succesfull!")
             except Exception as e:
                 print("Git error: ",e)
-            datalayer = {'Status':esp.firmwareVersion,'Tester':getVersion()}
+            datalayer = {'Status':esp_controller.firmwareVersion,'Tester':getVersion()}
         elif data["cmd"] == "start_test":
-            test_report = esp.start_testing()
-            datalayer = {'Status':esp.status,"Report":test_report}
+            test_report = esp_controller.start_testing()
+            datalayer = {'Status':esp_controller.status,"Report":test_report}
 
     response = app.response_class(
         response =json.dumps(datalayer),
