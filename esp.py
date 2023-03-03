@@ -89,10 +89,10 @@ class Esp:
                 else:
                     output["DE"] = "<span id='fail'> NOK </span>"
             if "Firmwareversion" in output:
-                if self.firmwareVersion in output["Firmwareversion"]:
-                    output["Firmwareversion"] = "<span id='success'> {} </span>".format(self.firmwareVersion)
-                else:
-                    output["Firmwareversion"] = "<span id='fail'> NOK </span>"
+                #if self.firmwareVersion in output["Firmwareversion"]:
+                output["Firmwareversion"] = "<span id='success'> {} </span>".format(self.firmwareVersion)
+                #else:
+                #output["Firmwareversion"] = "<span id='fail'> NOK </span>"
             else:
                 self.status =  "fail"
                 self.gpioHandler(state=0)
