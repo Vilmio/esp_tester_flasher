@@ -44,7 +44,7 @@ class Esp:
         
         try:
             self.status = "Upload new firmware, please wait!"
-            esptool.main(["--chip", "auto", "-b", "{}".format(self.baudrate), "write_flash", "-e","-z","0x1000","firmware_{}.bin".format(self.firmwareVersion)])
+            esptool.main(["--chip", "auto", "-b", "{}".format(self.baudrate), "write_flash", "-e", "-z", "0x0", "firmware_{}.bin".format(self.firmwareVersion)])
             print("Flash success!")
             self.status =  "ok"
         except Exception as e:
